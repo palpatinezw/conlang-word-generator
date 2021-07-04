@@ -31,7 +31,7 @@ function Home( {route, navigation} ) {
 		function phonemeSetter(seq) {
 			var tmpsto = {};
 			for (var i = 0; i < seq.length; i++) {
-				tmpsto[seq[i].ref] = new Phoneme(seq[i].romanisation, seq[i].ipa)
+				tmpsto[seq[i].ref] = new Phoneme(seq[i].romanisation, seq[i].ipa, seq[i].id)
 			}
 			setphonemes(tmpsto)
 		}
@@ -47,12 +47,12 @@ function Home( {route, navigation} ) {
 		var tmpsto = {}
 		function groupSetter(seq) {
 			for (var i = 0; i < seq.length; i++) {
-				tmpsto[seq[i].ref] = new Group(seq[i].seq.split(','))
+				tmpsto[seq[i].ref] = new Group(seq[i].seq.split(','), seq[i].id)
 			}
 		}
 		function patternSetter(seq) {
 			for (var i = 0; i < seq.length; i++) {
-				tmpsto[seq[i].ref] = new Pattern(seq[i].seq.split(','))
+				tmpsto[seq[i].ref] = new Pattern(seq[i].seq.split(','), seq[i].id)
 			}
 		}
 		db.transaction((tx)=> {
@@ -95,21 +95,34 @@ function Home( {route, navigation} ) {
 				const ipa = route.params.phonemes[i][1].ipa
 				const romanisation = route.params.phonemes[i][1].romanisation
 				const ref = route.params.phonemes[i][0]
-				nPhonemes[ref].push(route.params.phonemes[i][1])
+				nPhonemes[ref] = route.params.phonemes[i][1]
 
 				//check for modifications and UPDATE
 				if (ref in tPhonemes) {
-					//TODO : update db
+					if (tPhonemes[ref].romanisation != romanisation || tPhonemes[ref].ipa != ipa) {
+						db.transaction((tx) => {
+							tx.executeSql(`UPDATE phonemes SET romanisation=?, ipa=? WHERE ref=?`, [
+								// TODO: fix ID maybe for performance
+								romanisation,
+								ipa,
+								ref
+							])
+						}, null, console.log(`Updated phoneme ref: ${ref}`))
+					}
 				}
 				// check for additions and INSERT
 				else {
+					console.log(`Attempting to add phoneme ref: ${ref}`)
 					db.transaction((tx) => {
 						tx.executeSql(`INSERT INTO phonemes (romanisation, ipa, ref) VALUES (?, ?, ?)`, [
 							romanisation, ipa, ref
 						])
-					}, null, null)
+					}, null, console.log(`Added phoneme ref: ${ref}`))
 				}
 			}
+
+			loadPhonemes()
+			navigation.setParams({phonemes:null})
 		}
 	}, [route.params?.phonemes])
 

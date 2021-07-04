@@ -50,7 +50,7 @@ export default function PhonemeScreen( {route, navigation} ) {
         while (reflist.includes(ref)) ref = RandomNo(1, 10000)
         setphonemes([
             ...phonemes,
-            [ref, new Phoneme('romanisation', 'ipa')],
+            [ref, new Phoneme('romanisation', 'ipa', -1)],
         ])
         
     }
@@ -83,7 +83,7 @@ export default function PhonemeScreen( {route, navigation} ) {
             </Modal>
             <FlatList data={phonemes} renderItem={renderPhonemes} />
             <Button title="New" onPress={newPhoneme} />
-            <Button title="Save" onPress={() => navigation.navigate('Home', phonemes)} />
+            <Button title="Save" onPress={() => navigation.navigate('Home', {phonemes})} />
         </View>
     )
 }

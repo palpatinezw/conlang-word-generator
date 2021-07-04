@@ -1,13 +1,15 @@
 export class Phoneme {
-    constructor(romanisation, ipa) {
+    constructor(romanisation, ipa, id) {
         this.romanisation = romanisation
         this.ipa = ipa
+        this.id = id
     }
 }
 
 export class Pattern {
-    constructor(seq) {
+    constructor(seq, id) {
       this.seq = seq
+      this.id = id
     }
     
     gen() {
@@ -30,8 +32,9 @@ function RandomNo(min, max) {
 }
   
 export class Group {
-    constructor(seq) {
+    constructor(seq, id) {
       this.seq = seq
+      this.id = id
     }
   
     gen() {
