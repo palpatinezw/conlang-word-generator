@@ -67,6 +67,14 @@ export default function PhonemeScreen( {route, navigation} ) {
         tmp[curphoneme][1] = new Phoneme(phonemes[curphoneme][1].romanisation, nIpa)
         setphonemes(tmp)
     }
+    //deletes current phoneme
+    function delPhoneme() {
+        var tmpsto = [...phonemes]
+        tmpsto.splice(curphoneme, 1)
+        setphonemes(tmpsto)
+        setcurphoneme(0)
+        setModalVisible(false)
+    }
     return (
         <View style={styles.container}>
             <Modal 
@@ -79,9 +87,10 @@ export default function PhonemeScreen( {route, navigation} ) {
                     <TextInput style={styles.TextInput} value={phonemes[curphoneme][1].romanisation} onChangeText={(newText) => changeRom(newText)}/>
                     <TextInput style={styles.TextInput} value={phonemes[curphoneme][1].ipa} onChangeText={(newText) => changeIpa(newText)} />
                     <Button title="Done" onPress={() => setModalVisible(!modalVisible)} />
+                    <Button title="Delete" onPress={delPhoneme} />
                 </View>
             </Modal>
-            <FlatList data={phonemes} renderItem={renderPhonemes} />
+            <FlatList data={phonemes} renderItem={renderPhonemes} keyExtractor={(item, index) => index.toString()} />
             <Button title="New" onPress={newPhoneme} />
             <Button title="Save" onPress={() => navigation.navigate('Home', {phonemes})} />
         </View>

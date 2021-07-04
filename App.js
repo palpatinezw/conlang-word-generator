@@ -121,6 +121,19 @@ function Home( {route, navigation} ) {
 				}
 			}
 
+			for (var key in tPhonemes) {
+				if (tPhonemes.hasOwnProperty(key)) {
+					//check if it has been deleted
+					const ref = key
+					if (!(key in nPhonemes)) {
+						//key not found, has been deleted
+						db.transaction((tx) => {
+							tx.executeSql(`DELETE FROM phonemes WHERE ref=?;`, [ref,])
+						}, null, console.log(`Deleted phoneme ref: ${ref}`))
+					}
+				}
+			}
+
 			loadPhonemes()
 			navigation.setParams({phonemes:null})
 		}
@@ -136,6 +149,7 @@ function Home( {route, navigation} ) {
 			</Text>
 			<Button title="Gen" onPress={genWord} />
 			<Button title="Phonemes" onPress={() => navigation.navigate("Phonemes", {phonemes})} />
+			<Button title="Modify Generation Settings" onPress={() => navigation.navigate("Patterns and Groups", {phonemes, gentree})} />
 		</View>
 	);
 }

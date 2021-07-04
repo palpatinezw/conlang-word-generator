@@ -8,82 +8,14 @@ function RandomNo(min, max) {
 }
 
 export default function GenTreeScreen( {route, navigation} ) {
-    const [ phonemes, setphonemes ] = useState([])
-    const [ reflist, setreflist ] = useState([])
-    const [ curphoneme, setcurphoneme ] = useState(0)
-    const [ modalVisible, setModalVisible ] = useState(false)
-
-    useEffect(() => {
-        var tmpsto
-        var c = 0
-        for (var key in route.params.phonemes) {
-            if (route.params.phonemes.hasOwnProperty(key)) {
-                tmpsto.push( [key, route.params.phonemes[key]] )
-                reflist.push(key)
-            }
-        }
-        if (tmpsto.length == 0) {
-            tmpsto.push([0, new Phoneme('','') ])
-        }
-        setphonemes(tmpsto)
-    }, [])
-
-    function renderPhonemes({item, index}) {
-        if (item[1].ref == 0) {
-            return
-        }
-        return (
-            <View style={styles.phonemebox}>
-                <TouchableOpacity onPress={() => startEdit(index)}>
-                    <Text>{item[1].ref}</Text>
-                </TouchableOpacity>
-            </View>
-        )    
-    }
-    function startEdit(id) {
-        setcurphoneme(id)
-        setModalVisible(true)
-    }
-
-    function newPhoneme() {
-        var ref = RandomNo(1, 10000)
-        while (reflist.includes(ref)) ref = RandomNo(1, 10000)
-        setphonemes([
-            ...phonemes,
-            [ref, new Phoneme('romanisation', 'ipa')],
-        ])
-        setcurphoneme(phonemes.length - 1)
-        setModalVisible(true)
-    }
-
-    //changes the romanisation of the current phoneme
-    function changeRom(nRom) {
-        var tmp = phonemes
-        tmp[curphoneme][1].romanisation = nRom
-        setphonemes(tmp)
-    }
-    //changes the ipa of the current phoneme
-    function changeIpa(nIpa) {
-        var tmp = phonemes
-        tmp[curphoneme][1].ipa = nIpa
-        setphonemes(tmp)
-    }
     return (
         <View style={styles.container}>
-            <Modal 
-                visible={modalVisible} 
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.modalView}>
-                    <TextInput style={styles.TextInput} value={phonemes[curphoneme][1].romanisation} onChangeText={(newText) => changeRom(newText)}/>
-                    <TextInput style={styles.TextInput} value={phonemes[curphoneme][1].ipa} onChangeText={(newText) => changeIpa(newText)} />
-                    <Button title="Done" onPress={() => setModalVisible(!modalVisible)} />
-                </View>
-            </Modal>
-            <FlatList data={phonemes} renderItem={renderPhonemes} keyExtractor={item => item.id.toString()}/>
-            <Button title="New" onPress={newPhoneme} />
+            <View style={styles.updown}>
+                <Text>You thought this was working code?</Text>
+            </View>
+            <View style={styles.updown}>
+                <Text>HA sike</Text>
+            </View>
         </View>
     )
 }
@@ -108,7 +40,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 5,
     },
-    phonemebox: {
+    box: {
         height: 50,
         borderBottomWidth: 5,
         justifyContent: 'center',
@@ -139,4 +71,8 @@ const styles = StyleSheet.create({
         padding: 10,
         flex: 5,
     },
+    updown: {
+        flex:1,
+        padding: 5,
+    }
 });
